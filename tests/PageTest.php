@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PageTest extends TestCase
 {
+    use DatabaseTransactions;
     /**
      * A basic test example.
      *
@@ -28,6 +29,27 @@ class PageTest extends TestCase
             ->visit('/')
             ->click('Register')
             ->seePageIs('/register')
+        ;
+
+        $this
+            ->visit('/register')
+            ->type('Taylor', 'name')
+            ->type('taylor@gmail.com', 'email')
+            ->type('asdfasdf', 'password')
+            ->type('asdfasdf', 'password_confirmation')
+            ->press('Register')
+            ->seePageIs('/home')
+        ;
+
+        $form = $this->visit('/home')->getForm();
+        $this->visit('/home')->makeRequestUsingForm($form)->see('/');
+
+        $this
+            ->visit('/login')
+            ->type('taylor@gmail.com', 'email')
+            ->type('asdfasdf', 'password')
+            ->press('Login')
+            ->seePageIs('/home')
         ;
     }
 }
