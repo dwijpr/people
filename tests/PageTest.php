@@ -51,5 +51,10 @@ class PageTest extends TestCase
             ->press('Login')
             ->seePageIs('/home')
         ;
+
+        $this
+            ->visit('/')
+            ->seePageIs('/home')
+        ;
     }
 }
