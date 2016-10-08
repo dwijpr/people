@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Repositories\ActivationRepository;
+use App\Services\ActivationService;
+use App\User;
 
 class PageTest extends TestCase
 {
@@ -12,8 +15,7 @@ class PageTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
-    {
+    public function testExample() {
         $this
             ->visit('/')
             ->see(config('app.name'));
@@ -38,7 +40,28 @@ class PageTest extends TestCase
             ->type('asdfasdf', 'password')
             ->type('asdfasdf', 'password_confirmation')
             ->press('Register')
-            ->seePageIs('/home')
+            ->seePageIs('/login')
+            ->see(trans('_.user_activation_sent'))
+        ;
+
+        $this
+            ->visit('/login')
+            ->type('taylor@gmail.com', 'email')
+            ->type('asdfasdf', 'password')
+            ->press('Login')
+            ->seePageIs('/login')
+            ->see(trans('_.user_unactivated'))
+        ;
+
+        $user = User::where('email', 'taylor@gmail.com')->first();
+
+        $activationRepo = new ActivationRepository(DB::connection());
+        $activation = $activationRepo->getActivation($user);
+
+        $this
+            ->visit('/user/activation/'.$activation->token)
+            ->seePageIs('/login')
+            ->see(trans('_.user_activated'))
         ;
 
         $form = $this->visit('/home')->getForm();

@@ -43,10 +43,10 @@ class LoginController extends Controller
     }
 
     public function authenticated(Request $request, $user) {
-        if (!$user->confirmed) {
+        if (!$user->activated) {
             $this->activationService->sendActivationMail($user);
             auth()->logout();
-            return back()->with('warning', trans('_.user_unconfirmed'));
+            return back()->with('warning', trans('_.user_unactivated'));
         }
         return redirect()->intended($this->redirectPath());
     }

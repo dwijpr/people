@@ -95,7 +95,9 @@ class RegisterController extends Controller
 
     public function activateUser($token) {
         if ($user = $this->activationService->activateUser($token)) {
-            return redirect($this->redirectPath());
+            return redirect('/login')
+                ->with('user_activated_message', trans('_.user_activated'))
+            ;
         }
         abort(404);
     }

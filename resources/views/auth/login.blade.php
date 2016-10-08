@@ -17,6 +17,11 @@
                         {{ session('warning') }}
                     </div>
                     @endif
+                    @if(session('user_activated_message'))
+                    <div class="alert alert-success">
+                        {{ session('user_activated_message') }}
+                    </div>
+                    @endif
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                         {{ csrf_field() }}
 
