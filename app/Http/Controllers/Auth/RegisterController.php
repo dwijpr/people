@@ -88,14 +88,13 @@ class RegisterController extends Controller
 
         return redirect('/login')
             ->with(
-                'status', 'We sent you an activation code. Check your email.'
+                'status', trans('_.user_activation_sent')
             )
         ;
     }
 
     public function activateUser($token) {
         if ($user = $this->activationService->activateUser($token)) {
-            auth()->login($user);
             return redirect($this->redirectPath());
         }
         abort(404);

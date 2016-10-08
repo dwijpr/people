@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use App\Services\ActivationService;
 
 class LoginController extends Controller
 {
@@ -27,26 +29,24 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/home';
 
+    protected $activationService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ActivationService $activationService)
     {
         $this->middleware('guest', ['except' => 'logout']);
+        $this->activationService = $activationService;
     }
 
     public function authenticated(Request $request, $user) {
-        if (!$user->activated) {
+        if (!$user->confirmed) {
             $this->activationService->sendActivationMail($user);
             auth()->logout();
-            return back()->with(
-                'warning'
-                , 'You need to confirm your account. '
-                + 'We have sent you an activation code, '
-                + 'please check your email.'
-            );
+            return back()->with('warning', trans('_.user_unconfirmed'));
         }
         return redirect()->intended($this->redirectPath());
     }
