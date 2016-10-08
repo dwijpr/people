@@ -52,4 +52,13 @@ $app->singleton(
 |
 */
 
+use Monolog\Handler\StreamHandler;
+
+$app->configureMonologUsing(function ($monolog) {
+    $streamHandler = new StreamHandler(
+        storage_path('/logs/laravel_'.get_current_user().'.log')
+    );
+    $monolog->pushHandler($streamHandler);
+});
+
 return $app;
