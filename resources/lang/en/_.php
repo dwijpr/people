@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'Login' => "Login",
+    'Register' => "Register",
     'user_activation_sent' => 
         'We sent you an activation code. Check your email.',
     'user_unactivated' => 
