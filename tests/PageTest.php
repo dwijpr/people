@@ -72,22 +72,9 @@ class PageTest extends TestCase
         User Registration
         -   /register [form] -> inputs
             success -> /login message _.user_activation_sent
-
-        Login Unactivated User
-        -   /register [login] -> inputs
-            success -> /login message _.user_unactivated
-
-        User Activation
-        -   /user/activation/{token}
-            success -> /login message _.user_activated
-
-        Logout
-
-        Login
     */
 
-    public function testExample() {
-
+    public function userRegistration() {
         $this
             ->visit('/register')
             ->type('Taylor', 'name')
@@ -98,7 +85,15 @@ class PageTest extends TestCase
             ->seePageIs('/login')
             ->see(trans('_.user_activation_sent'))
         ;
+    }
 
+    /*
+        Login Unactivated User
+        -   /register [login] -> inputs
+            success -> /login message _.user_unactivated
+    */
+
+    public function unactivatedUser() {
         $this
             ->visit('/login')
             ->type('taylor@gmail.com', 'email')
@@ -107,7 +102,15 @@ class PageTest extends TestCase
             ->seePageIs('/login')
             ->see(trans('_.user_unactivated'))
         ;
+    }
 
+    /*
+        User Activation
+        -   /user/activation/{token}
+            success -> /login message _.user_activated
+    */
+
+    public function userActivation() {
         $user = User::where('email', 'taylor@gmail.com')->first();
 
         $activationRepo = new ActivationRepository(DB::connection());
@@ -118,10 +121,13 @@ class PageTest extends TestCase
             ->seePageIs('/login')
             ->see(trans('_.user_activated'))
         ;
+    }
 
-        $form = $this->visit('/home')->getForm();
-        $this->visit('/home')->makeRequestUsingForm($form)->see('/');
+    /*
+        Login
+    */
 
+    public function login() {
         $this
             ->visit('/login')
             ->type('taylor@gmail.com', 'email')
@@ -135,4 +141,26 @@ class PageTest extends TestCase
             ->seePageIs('/home')
         ;
     }
+
+    /*
+        Logout
+    */
+
+    public function logout() {
+        $form = $this->visit('/home')->getForm();
+        $this->visit('/home')->makeRequestUsingForm($form)->see('/');
+    }
+
+    /*
+        Flow
+    */
+
+    public function testFlowRegistrationAndLogin() {
+        $this->userRegistration();
+        $this->unactivatedUser();
+        $this->userActivation();
+        $this->login();
+        $this->logout();
+    }
+
 }
