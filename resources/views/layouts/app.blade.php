@@ -11,9 +11,18 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
+    {{ Html::style(
+        '/assets/thirdparties/bootstrap/3.3.7/dist/css/bootstrap.css'
+    ) }}
+
+    @include('layouts.app.style')
+    @yield('style')
 
     <!-- Scripts -->
+    {{ Html::script('/assets/thirdparties/js/jquery-1.12.4.js') }}
+    {{ Html::script(
+        '/assets/thirdparties/bootstrap/3.3.7/dist/js/bootstrap.js'
+    ) }}
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
@@ -21,7 +30,7 @@
     </script>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
 
@@ -79,7 +88,5 @@
 
     @yield('content')
 
-    <!-- Scripts -->
-    <script src="/js/app.js"></script>
 </body>
 </html>
