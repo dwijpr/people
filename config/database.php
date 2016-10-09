@@ -64,6 +64,11 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'ignores' => [],
+            'skips' => [
+                'users', 'password_resets', 'role_user',
+                'user_activations',
+            ],
         ],
 
         'pgsql' => [

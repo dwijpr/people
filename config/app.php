@@ -182,6 +182,7 @@ return [
          * Additional
          */
         Collective\Html\HtmlServiceProvider::class,
+        Orangehill\Iseed\IseedServiceProvider::class,
 
     ],
 
