@@ -13,7 +13,7 @@ class AssignAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'assign:admin';
+    protected $signature = 'assign:admin {email}';
 
     /**
      * The console command description.
@@ -39,7 +39,7 @@ class AssignAdmin extends Command
      */
     public function handle()
     {
-        $email = $this->ask('Enter an Email');
+        $email = $this->argument('email');
         if ($user = User::where('email', $email)->first()) {
             $this->info('User found ... assign Admin role');
             $this->assign($user);
