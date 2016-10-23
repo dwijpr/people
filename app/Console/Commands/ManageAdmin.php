@@ -6,21 +6,21 @@ use Illuminate\Console\Command;
 use App\User;
 use App\Role;
 
-class AssignAdmin extends Command
+class ManageAdmin extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'assign:admin {email}';
+    protected $signature = 'admin:manage {action} {email}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Assign person as a User Admin';
+    protected $description = 'Assign / Revoke person with Admin role';
 
     /**
      * Create a new command instance.
@@ -39,19 +39,26 @@ class AssignAdmin extends Command
      */
     public function handle()
     {
+        $action = $this->argument('action');
         $email = $this->argument('email');
+        $role = Role::where('name', 'admin')->first();
         if ($user = User::where('email', $email)->first()) {
-            $this->info('User found ... assign Admin role');
-            $this->assign($user);
+            $this->info('User found ... '.$action.' Admin role');
+            $this->{$action}($user, $role);
         } else {
             $this->warn('User not found!');
         }
     }
 
-    private function assign(User $user) {
-        $role = Role::where('name', 'admin')->first();
+    private function revoke(User $user, Role $role) {
+        if (!$user->removeRole($role)) {
+            $this->warn('Error removing admin role for the user!');
+        }
+    }
+
+    private function assign(User $user, Role $role) {
         if (!$user->assignRole($role)) {
-            $this->warn('Cannot assign User as Admin!');
+            $this->warn('Failed assign User as Admin!');
         }
     }
 }

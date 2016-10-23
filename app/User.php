@@ -31,6 +31,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function removeRole(Role $role) {
+        if ($this->hasRole($role)) {
+            $result = $this->roles()->detach($role);
+            return $result;
+        }
+        return false;
+    }
+
     public function assignRole(Role $role) {
         if (!$this->hasRole($role)) {
             return $this->roles()->save($role);
