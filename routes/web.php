@@ -19,3 +19,12 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser');
+
+Route::group([
+        'middleware' => [
+            'auth', 'roles'
+        ],
+        'roles' => 'Admin'
+], function() {
+    Route::resource('/people', 'PeopleController');
+});

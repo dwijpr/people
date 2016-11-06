@@ -50,6 +50,8 @@ class AdminTest extends TestCase
             'action' => 'assign',
             'email' => $user->email,
         ]);
+        $user = User::find($user->id);
+        return $user;
     }
 
     /*
@@ -73,6 +75,25 @@ class AdminTest extends TestCase
         ;
     }
 
+    /**
+     * See People link
+     */
+    private function seePeopleLink() {
+        $this
+            ->visit('/home')
+            ->see('People')
+        ;
+    }
+
+    /**
+     * Get People page
+     */
+    private function getPeoplePage() {
+        return $this
+            ->get('/people')
+        ;
+    }
+
     /*
         Go to People page
     */
@@ -82,15 +103,29 @@ class AdminTest extends TestCase
         ;
     }
 
+    /**
+     * Logout
+     */
+    public function logout() {
+        $form = $this->visit('/home')->getForm();
+        $this->visit('/home')->makeRequestUsingForm($form)->see('/');
+    }
+
+    /**
+     * Main Test Flow
+     */
     public function test()
     {
         $this->userRegister();
         $this->userActivation();
         $this->login();
         $this->dontSeePeopleLink();
-        $this->goToPeoplePage()->assertResponseStatus(404);
+        $this->getPeoplePage()->assertResponseStatus(401);
 
         $this->assignAdmin();
+        $this->logout();
+        $this->login();
+        $this->seePeopleLink();
         $this->goToPeoplePage();
         $this->seeListOfUsers();
         $this->storeUsersStatus();
